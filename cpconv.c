@@ -125,7 +125,7 @@ int opts;
 
 void usage(){
 	W("convert stdin to stdout\n"
-			"Usage: cpconv [-hslxud] [tocp] [fromcp]\n\n"
+			"Usage: cpconv [-hslxud] [tocp [fromcp]]\n\n"
 			"Examples: cat text.txt | cpconv cp437 cp850\n"
 			"         (convert from cp850 to cp437)\n\n"
 			"          cat text.txt | cpconv\n"

@@ -56,7 +56,7 @@ it's not written for security.
 # cpconv -h
 
 convert stdin to stdout
-Usage: cpconv [-hslxud] [tocp] [fromcp]
+Usage: cpconv [-hslxud] [tocp [fromcp]]
 
 Examples: cat text.txt | cpconv cp437 cp850
          (convert from cp850 to cp437)
