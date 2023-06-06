@@ -129,7 +129,9 @@ void usage(){
 			"Examples: cat text.txt | cpconv cp437 cp850\n"
 			"         (convert from cp850 to cp437)\n\n"
 			"          cat text.txt | cpconv\n"
-			"         (convert to cp1252, guessing source charset\n\n"
+			"         (convert to "); 
+	W(cp[DEFAULT_CP].name); 
+	W(", guessing source charset\n\n"
 			"Without any options, try to guess the charset and convert to ");
    W(cp[DEFAULT_CP].name);
 	W(		"\n(change the default in the source, if needed)\n\n"
@@ -161,7 +163,7 @@ void listcodepages(){
 	exit(0);
 }
 
-// handle stuttering pipes and signals
+// handle stuttering pipes and signals (renamed to nread - this has nothing with those folks to do)
 static int nread(uchar *buf, int len){
 	uchar *b = buf;
 	uchar *e = buf+len;
