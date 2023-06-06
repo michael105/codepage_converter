@@ -1,4 +1,4 @@
-##### cpc
+##### cpconv
 
 Codepage conversion tool.
 
