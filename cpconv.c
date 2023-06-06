@@ -162,7 +162,7 @@ void listcodepages(){
 }
 
 // handle stuttering pipes and signals
-static int xread(uchar *buf, int len){
+static int nread(uchar *buf, int len){
 	uchar *b = buf;
 	uchar *e = buf+len;
 	int ret;
@@ -355,7 +355,7 @@ int main(int argc, char **argv ){
 	}
 
 
-	len = xread(buf,BUF);
+	len = nread(buf,BUF);
 
 	if ( from == -1 ){
 		V("Guessing charset\n");
@@ -365,7 +365,7 @@ int main(int argc, char **argv ){
 	if ( (from == -1) || // no conversion possible, no extended ascii
 			( (from==to) && ( V("Source and destination codepage are the same\n")) ) ){ 		
 		// write stdin to stdout (we are a filter)
-		do{ write(1,buf,len); } while (( len=xread(buf,BUF) ));
+		do{ write(1,buf,len); } while (( len=nread(buf,BUF) ));
 		exit(0);
 	}
 
@@ -387,7 +387,7 @@ int main(int argc, char **argv ){
 						len -= a;
 						memmove(buf,(buf+a),len);
 						a = 0;
-						int l = xread((buf+len),BUF-len);
+						int l = nread((buf+len),BUF-len);
 						if ( l>0 )
 							len += l;
 					}
@@ -481,7 +481,7 @@ ERR_UTF8:
 
 		write(1,obuf,p);
 
-	} while (( len = xread(buf,BUF) ));
+	} while (( len = nread(buf,BUF) ));
 
 
 	exit(0);
