@@ -36,8 +36,10 @@
 #define UNITABLE 0x2800
 
 // The default target encoding
-// (count cp from 0, 3=cp1252
+// (count cp from 0, 3=cp1252, 15=utf8)
+#ifndef DEFAULT_CP 
 #define DEFAULT_CP 3
+#endif
 
 
 #include "charmaps.h"
