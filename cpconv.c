@@ -397,8 +397,14 @@ int main(int argc, char **argv ){
 		while ( a<len ){
 
 			if ( OPT(c) ) { // cstring
-				if ( ( buf[a] <32 && (OPT(C) || buf[a]!='\n') ) || buf[a] >127 )
-					p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
+				if ( buf[a] <32 || buf[a] >127 )
+					if ( buf[a] == '\n' ){
+						if ( OPT(C) ){
+							obuf[p++] = '\\';
+							obuf[p++] = 'n';
+						}
+					} else
+						p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
 				else 
 					obuf[p++] = buf[a];
 			} else if ( buf[a] <128 )
