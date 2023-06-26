@@ -42,7 +42,6 @@ No previous conversion of the input, extended ascii and chars < ascii 32 are con
 to \xnn notation, linebreaks (\n \x0a) aren't modified.
 
 
-
 It's a small hack, but useful, if you do work at the terminal.
 Most programs will work with e.g. cp1252, or cp437 (the set with border symbols),
 but I did always have a hard time with German Umlauts and utf-8.
@@ -76,6 +75,7 @@ options: -s : silence, no messages to stderr
          -l : list codepages
          -U : dump umlaute, converted
          -c : convert input to cstring notation
+         -C : convert input to cstring notation, including linebreaks
          -x : display non convertible chars in hexadecimal
          -u : display non convertible chars as utf8
          -d : print debug information
