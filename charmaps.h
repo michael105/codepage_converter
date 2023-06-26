@@ -89,8 +89,6 @@ static const unsigned short cpe4002a[] = {
 };
 
 
-static const unsigned short cstring[] = { };
-
 // A personal codepage. (Using Exxxx as number according to the rfc)
 // This is a mix of cp 437 (box drawing chars), German Umlauts and sz,
 // greek (greek alphabet), and several logical and mathematical

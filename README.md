@@ -32,13 +32,12 @@ macintosh
 mac_centraleurope
 iso8859_15
 utf8
-cstring
 </pre>
 
 
 cpe4002a is a special codepage, I'm using with st.
 
-cstring converts the input to the notation, used in c strings. ( "\x84\xef .. " )
+The option -c converts the input to the notation, used in c strings. ( "\x84\xef .. " )
 No previous conversion of the input, extended ascii and chars < ascii 32 are converted
 to \xnn notation, linebreaks (\n \x0a) aren't modified.
 
@@ -76,6 +75,7 @@ options: -s : silence, no messages to stderr
          -v : verbose
          -l : list codepages
          -U : dump umlaute, converted
+         -c : convert input to cstring notation
          -x : display non convertible chars in hexadecimal
          -u : display non convertible chars as utf8
          -d : print debug information

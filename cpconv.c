@@ -95,7 +95,6 @@ const charmap cp[] = {
 	MAP( mac_centraleurope, b6, "" ),
 	MAP( iso8859_15, b6, "" ),
 	MAP( utf8,7e,""),
-	MAP( cstring, ff, "" ),
 	{0,0,0,0},
 };
 
@@ -105,7 +104,7 @@ const charmap cp[] = {
 #define NUMCP (sizeof(cp)/sizeof(charmap)-1)
 
 
-enum { OPT_v=1, OPT_s=2, OPT_u=4, OPT_x=8, OPT_d=16, OPT_Q=32 } OPT_enum;
+enum { OPT_v=1, OPT_s=2, OPT_u=4, OPT_x=8, OPT_d=16, OPT_Q=32, OPT_c=64 } OPT_enum;
 
 #define OPT(x) (opts&OPT_##x)
 
@@ -141,6 +140,7 @@ void usage(){
 			"         -v : verbose\n"
 			"         -l : list codepages\n"
 			"         -U : dump umlaute, converted\n"
+			"         -c : convert input to cstring notation\n"
 			"         -x : display non convertible chars in hexadecimal\n"
 			"         -u : display non convertible chars as utf8\n"
 			"         -d : print debug information\n"
@@ -325,6 +325,9 @@ int main(int argc, char **argv ){
 				case 'v':
 					 opts|=OPT_v;
 				break;
+				case 'c':
+					 opts|=OPT_c;
+				break;
 				case 'U':
 					# define _COPY(d,s) memcpy(d,s,sizeof(s)); len=sizeof(s) -1
 					_COPY(buf, "\nUmlaute\n\n\x84\x94\x81\n---\n\x8e\x99\x9a\n\n");
@@ -376,8 +379,8 @@ int main(int argc, char **argv ){
 		from = guess_charmap(buf,len);
 	}
 
-	if ( (from == -1) || // no conversion possible, no extended ascii
-			( (from==to) && ( V("Source and destination codepage are the same\n")) ) ){ 		
+	if ( !OPT(c) && ((from == -1) || // no conversion possible, no extended ascii
+			( (from==to) && ( V("Source and destination codepage are the same\n")) )) ){ 		
 		// write stdin to stdout (we are a filter)
 		do{ write(1,buf,len); } while (( len=nread(buf,BUF) ));
 		exit(0);
@@ -390,7 +393,7 @@ int main(int argc, char **argv ){
 		int a = 0; 
 		while ( a<len ){
 
-			if ( to == 16 ) { // cstring
+			if ( OPT(c) ) { // cstring
 				if ( ( buf[a] <32 && buf[a]!='\n' ) || buf[a] >127 )
 					p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
 				else 
