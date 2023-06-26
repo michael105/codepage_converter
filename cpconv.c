@@ -290,7 +290,7 @@ int guess_charmap(const unsigned char *buf, int len){
 
 int main(int argc, char **argv ){
 
-	opts = OPT_v; // verbose
+	//opts = OPT_v; // verbose
 					 
 	// parse options
 	for ( *argv++; *argv && *argv[0] == '-'; *argv++ ){
