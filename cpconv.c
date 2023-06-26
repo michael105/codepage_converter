@@ -374,7 +374,7 @@ int main(int argc, char **argv ){
 	if ( !len )
 		len = nread(buf,BUF);
 
-	if ( from == -1 ){
+	if ( !OPT(c) && (from == -1) ){
 		V("Guessing charset\n");
 		from = guess_charmap(buf,len);
 	}
