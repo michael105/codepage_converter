@@ -36,7 +36,7 @@
 #define UNITABLE 0x2800
 
 // The default target encoding
-// (count cp from 0, 3=cp1252, 15=utf8)
+// (count cp from 0, 0=cpe4002a, 2=cp850, 3=cp1252, .. 15=utf8)
 #ifndef DEFAULT_CP 
 #define DEFAULT_CP 3
 #endif
@@ -94,8 +94,8 @@ const charmap cp[] = {
 	MAP( macintosh, b6, "" ),
 	MAP( mac_centraleurope, b6, "" ),
 	MAP( iso8859_15, b6, "" ),
-
-	MAP(utf8,7e,""),
+	MAP( utf8,7e,""),
+	MAP( cstring, ff, "" ),
 	{0,0,0,0},
 };
 
@@ -105,7 +105,7 @@ const charmap cp[] = {
 #define NUMCP (sizeof(cp)/sizeof(charmap)-1)
 
 
-enum { OPT_v=1, OPT_s=2, OPT_u=4, OPT_x=8, OPT_d=16 } OPT_enum;
+enum { OPT_v=1, OPT_s=2, OPT_u=4, OPT_x=8, OPT_d=16, OPT_Q=32 } OPT_enum;
 
 #define OPT(x) (opts&OPT_##x)
 
@@ -138,7 +138,9 @@ void usage(){
    W(cp[DEFAULT_CP].name);
 	W(		"\n(change the default in the source, if needed)\n\n"
 			"options: -s : silence, no messages to stderr\n"
+			"         -v : verbose\n"
 			"         -l : list codepages\n"
+			"         -U : dump umlaute, converted\n"
 			"         -x : display non convertible chars in hexadecimal\n"
 			"         -u : display non convertible chars as utf8\n"
 			"         -d : print debug information\n"
@@ -170,6 +172,9 @@ static int nread(uchar *buf, int len){
 	uchar *b = buf;
 	uchar *e = buf+len;
 	int ret;
+
+	if ( opts & OPT_Q )
+		return(0);
 
 	do {
 		errno = 0;
@@ -292,6 +297,10 @@ int guess_charmap(const unsigned char *buf, int len){
 
 int main(int argc, char **argv ){
 
+	unsigned char buf[BUF],obuf[OBUF];
+	int len = 0;
+	int from = -1;
+	int to = -1;
 	//opts = OPT_v; // verbose
 					 
 	// parse options
@@ -316,6 +325,12 @@ int main(int argc, char **argv ){
 				case 'v':
 					 opts|=OPT_v;
 				break;
+				case 'U':
+					# define _COPY(d,s) memcpy(d,s,sizeof(s)); len=sizeof(s) -1
+					_COPY(buf, "\nUmlaute\n\n\x84\x94\x81\n---\n\x8e\x99\x9a\n\n");
+					to = 0; // gets to from
+					opts|=OPT_Q; // don't read from stdin
+					break;
 				default: // -h, --help, ..
 					usage();
 			}
@@ -326,11 +341,6 @@ int main(int argc, char **argv ){
 	if ( argc>2 )
 		usage();
 
-
-	unsigned char buf[BUF],obuf[OBUF];
-	int len;
-	int from = -1;
-	int to = -1;
 
 	// parse from and to codepage (if)
 	while ( argc>0 ){
@@ -358,8 +368,8 @@ int main(int argc, char **argv ){
 			ocp[ cp[to].map[a] ] = a + 128;
 	}
 
-
-	len = nread(buf,BUF);
+	if ( !len )
+		len = nread(buf,BUF);
 
 	if ( from == -1 ){
 		V("Guessing charset\n");
@@ -380,10 +390,15 @@ int main(int argc, char **argv ){
 		int a = 0; 
 		while ( a<len ){
 
-			if ( buf[a] <128 )
+			if ( to == 16 ) { // cstring
+				if ( ( buf[a] <32 && buf[a]!='\n' ) || buf[a] >127 )
+					p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
+				else 
+					obuf[p++] = buf[a];
+			} else if ( buf[a] <128 )
 				obuf[p++] = buf[a];
 			else { // char > 127
-				// get unicode point
+							// get unicode point
 				uint uc; 
 				// convert utf-8 to unicode
 				if ( from == UTF8 ){
@@ -485,7 +500,7 @@ ERR_UTF8:
 
 		write(1,obuf,p);
 
-	} while (( len = nread(buf,BUF) ));
+	} while ( (len = nread(buf,BUF)) );
 
 
 	exit(0);

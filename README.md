@@ -32,10 +32,15 @@ macintosh
 mac_centraleurope
 iso8859_15
 utf8
+cstring
 </pre>
 
 
 cpe4002a is a special codepage, I'm using with st.
+
+cstring converts the input to the notation, used in c strings. ( "\x84\xef .. " )
+No previous conversion of the input, extended ascii and chars < ascii 32 are converted
+to \xnn notation, linebreaks (\n \x0a) aren't modified.
 
 
 
@@ -49,7 +54,7 @@ BOM characters aren't translated, but I also didn't come along them yet.
 
 
 I wouldn't recommend using this in a security relevant context,
-it's not written for security.
+it's not written for security, BOM characters could get a problem.
 
 
 <pre>
@@ -68,7 +73,9 @@ Without any options, try to guess the charset and convert to cp1252
 (change the default in the source, if needed)
 
 options: -s : silence, no messages to stderr
+         -v : verbose
          -l : list codepages
+         -U : dump umlaute, converted
          -x : display non convertible chars in hexadecimal
          -u : display non convertible chars as utf8
          -d : print debug information
