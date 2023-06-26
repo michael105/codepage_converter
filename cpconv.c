@@ -402,7 +402,8 @@ int main(int argc, char **argv ){
 						if ( OPT(C) ){
 							obuf[p++] = '\\';
 							obuf[p++] = 'n';
-						}
+						} else
+							obuf[p++] = '\n';
 					} else
 						p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
 				else 
