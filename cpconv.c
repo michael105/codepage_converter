@@ -408,8 +408,10 @@ int main(int argc, char **argv ){
 						p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
 				else 
 					obuf[p++] = buf[a];
+
 			} else if ( buf[a] <128 )
 				obuf[p++] = buf[a];
+
 			else { // char > 127
 							// get unicode point
 				uint uc; 
