@@ -104,7 +104,7 @@ const charmap cp[] = {
 #define NUMCP (sizeof(cp)/sizeof(charmap)-1)
 
 
-enum { OPT_v=1, OPT_s=2, OPT_u=4, OPT_x=8, OPT_d=16, OPT_Q=32, OPT_c=64 } OPT_enum;
+enum { OPT_v=1, OPT_s=2, OPT_u=4, OPT_x=8, OPT_d=16, OPT_Q=32, OPT_c=64, OPT_C=128 } OPT_enum;
 
 #define OPT(x) (opts&OPT_##x)
 
@@ -141,6 +141,7 @@ void usage(){
 			"         -l : list codepages\n"
 			"         -U : dump umlaute, converted\n"
 			"         -c : convert input to cstring notation\n"
+			"         -C : convert input to cstring notation, including linebreaks\n"
 			"         -x : display non convertible chars in hexadecimal\n"
 			"         -u : display non convertible chars as utf8\n"
 			"         -d : print debug information\n"
@@ -325,6 +326,8 @@ int main(int argc, char **argv ){
 				case 'v':
 					 opts|=OPT_v;
 				break;
+				case 'C':
+					 opts|=OPT_C;
 				case 'c':
 					 opts|=OPT_c;
 				break;
@@ -394,7 +397,7 @@ int main(int argc, char **argv ){
 		while ( a<len ){
 
 			if ( OPT(c) ) { // cstring
-				if ( ( buf[a] <32 && buf[a]!='\n' ) || buf[a] >127 )
+				if ( ( buf[a] <32 && (OPT(C) || buf[a]!='\n') ) || buf[a] >127 )
 					p+= sprintf( (char*)obuf+p,"\\x%02x",buf[a] );
 				else 
 					obuf[p++] = buf[a];
