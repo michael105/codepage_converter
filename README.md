@@ -35,7 +35,7 @@ utf8
 </pre>
 
 
-cpe4002a is a special codepage, I'm using with st.
+cpe4002a is a special codepage, I'm using with slterm (https://github.com/michael105/slterm).
 
 The option -c converts the input to the notation, used in c strings. ( "\x84\xef .. " )
 No previous conversion of the input, extended ascii and chars < ascii 32 are converted
