@@ -8,10 +8,10 @@ the charset will be guessed and translated to cp1252.
 
 
 Currently, the guessing of the charmap might work only with German,
-the "algorithm" looks for German Umlauts.( &auml;&ouml; .. )
+the "algorithm" looks for German Umlauts.( &auml;&ouml; .. ) 
+It's explained in the source, howto add other languages.
 
 Only extended ascii is implemented (ASCII 0 - 255 ), and UTF8.
-
 
 Conversion from and to the following charmaps is possible:
 
@@ -35,11 +35,11 @@ utf8
 </pre>
 
 
-cpe4002a is a special codepage, I'm using with slterm (https://github.com/michael105/slterm).
+cpe4002a is a special codepage, I'm using with slterm. (https://github.com/michael105/slterm)
 
 The option -c converts the input to the notation, used in c strings. ( "\x84\xef .. " )
 No previous conversion of the input, extended ascii and chars < ascii 32 are converted
-to \xnn notation, linebreaks (\n \x0a) aren't modified.
+to \xnn notation, linebreaks ("\n","\x0a") aren't modified.
 
 
 It's a small hack, but useful, if you do work at the terminal.
@@ -53,6 +53,7 @@ BOM characters aren't translated, but I also didn't come along them yet.
 
 I wouldn't recommend using this in a security relevant context,
 it's not written for security, BOM characters could get a problem.
+Filtering texts should be save, just don't put it in back of a server.
 
 
 <pre>
