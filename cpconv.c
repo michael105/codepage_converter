@@ -163,13 +163,12 @@ void listcodepages(){
 			fprintf(stderr," (default)");
 	}
 	fprintf(stderr,"\n");
-	//fprintf(stderr,"\nDefault target encoding: %s\n",cp[DEFAULT_CP].name);
 
 	exit(0);
 }
 
-// handle stuttering pipes and signals (renamed to nread - this has nothing with those folks to do)
-static int nread(uchar *buf, int len){
+// handle stuttering pipes and signals (renamed to nmread - this has nothing with those folks to do)
+static int nmread(uchar *buf, int len){
 	uchar *b = buf;
 	uchar *e = buf+len;
 	int ret;
@@ -212,25 +211,19 @@ int guess_charmap(const unsigned char *buf, int len){
 	int so=0; // chars, extended ascii ( 128-192 )
 	int co = 0; // control chars.
 	int ext = 0; // chars 128-255
-
-
 	int a = 0;
+
 	while ( a<len ){
 		switch (buf[a]) {
 			case 0 ... 31:
 				co++;
 				break;
 			case 128 ... 255:
-
 				ext++;
-				//printf("c: %d\n",buf[a]);
 				for ( int b = 0; b<NUMCP-1; b++ ){
-					//printf("BBB\n");
 					for ( const unsigned char *c = cp[b].chars; *c; c++ ){
-						//printf("b: %d c: %d\n",b,*c);
 						if ( *c == buf[a] ){
 							guess[b] = guess[b] + 1;
-							//printf("guess, b: %d = %d\n",b,guess[b]);
 							break;
 						}
 					}
@@ -375,7 +368,7 @@ int main(int argc, char **argv ){
 	}
 
 	if ( !len )
-		len = nread(buf,BUF);
+		len = nmread(buf,BUF);
 
 	if ( !OPT(c) && (from == -1) ){
 		V("Guessing charset\n");
@@ -385,7 +378,7 @@ int main(int argc, char **argv ){
 	if ( !OPT(c) && ((from == -1) || // no conversion possible, no extended ascii
 			( (from==to) && ( V("Source and destination codepage are the same\n")) )) ){ 		
 		// write stdin to stdout (we are a filter)
-		do{ write(1,buf,len); } while (( len=nread(buf,BUF) ));
+		do{ write(1,buf,len); } while (( len=nmread(buf,BUF) ));
 		exit(0);
 	}
 
@@ -421,7 +414,7 @@ int main(int argc, char **argv ){
 						len -= a;
 						memmove(buf,(buf+a),len);
 						a = 0;
-						int l = nread((buf+len),BUF-len);
+						int l = nmread((buf+len),BUF-len);
 						if ( l>0 )
 							len += l;
 					}
@@ -515,8 +508,7 @@ ERR_UTF8:
 
 		write(1,obuf,p);
 
-	} while ( (len = nread(buf,BUF)) );
-
+	} while ( (len = nmread(buf,BUF)) );
 
 	exit(0);
 }
